@@ -1,41 +1,42 @@
 import express from 'express';
-import { PrismaClient } from '@prisma/client'
-import cors from 'cors'
-const prisma = new PrismaClient()
+import { PrismaClient } from '@prisma/client';
+import cors from 'cors';
 
-
+const prisma = new PrismaClient();
 const app = express();
-app.use(express.json());
-app.use(cors())
 
-app.post('/users',async (req, res) => {
+app.use(express.json());
+app.use(cors());
+
+app.post('/users', async (req, res) => {
     await prisma.user.create({
         data: {
             name: req.body.name,
             email: req.body.email,
             age: req.body.age
         }
-    })
-    res.status(201).json(req.body)
-})
+    });
+    res.status(201).json(req.body);
+});
 
 app.get('/users', async (req, res) => {
-    let users = []
+    let users = [];
 
-    if(req.query){
+    if (req.query) {
         users = await prisma.user.findMany({
             where: {
                 name: req.query.name,
                 email: req.query.email,
-                age:req.query.age,
+                age: req.query.age,
             },
-        })
-    }else{
-        users = await prisma.user.findMany()
+        });
+    } else {
+        users = await prisma.user.findMany();
     }
-    res.status(200).json(users)
-})
-app.put('/users/:id',async (req, res) => {
+    res.status(200).json(users);
+});
+
+app.put('/users/:id', async (req, res) => {
     await prisma.user.update({
         where: {
             id: req.params.id,
@@ -45,20 +46,21 @@ app.put('/users/:id',async (req, res) => {
             email: req.body.email,
             age: req.body.age
         }
-    })
-    res.status(201).json(req.body)
-})
+    });
+    res.status(201).json(req.body);
+});
 
-app.delete('/users/:id',async (req, res) => {
+app.delete('/users/:id', async (req, res) => {
     await prisma.user.delete({
         where: {
             id: req.params.id,
         },
-    })
-    res.status(200).json({message: "Sucess Deteler User!"})
-})
-app.listen
-(3100)
+    });
+    res.status(200).json({ message: "Success! User deleted." });
+});
 
-//Password auth
-'45Sq5ojJzFFJgZtc'
+// Ajuste a porta para o Render
+const PORT = process.env.PORT || 3100;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
